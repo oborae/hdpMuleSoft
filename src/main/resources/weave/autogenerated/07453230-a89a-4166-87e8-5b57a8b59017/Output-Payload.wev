@@ -1,0 +1,15 @@
+%dw 2.0
+
+type auto_07453230_a89a_4166_87e8_5b57a8b59017_Output_Payload = Array<Instalment__c {"typeId": "Instalment__c",
+"label": "Instalment"}>
+type Instalment__c = {|
+  Id?: String {"typeId": "Id"}, 
+  Instalment_Amount__c?: Number {"typeId": "Instalment_Amount__c"}, 
+  Instalment_Date__c?: Date {"typeId": "Instalment_Date__c"}, 
+  Instalment_Type__c?: ("Down Payment" | "Second Down Payment" | "Installment" | "Maintenance") {"typeId": "Instalment_Type__c"}, 
+  Name?: String {"typeId": "Name"}
+|} {"typeId": "Instalment__c",
+"label": "Instalment"}
+
+
+

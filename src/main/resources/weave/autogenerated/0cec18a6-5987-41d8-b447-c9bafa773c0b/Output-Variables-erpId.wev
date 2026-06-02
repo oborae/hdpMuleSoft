@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_0cec18a6_5987_41d8_b447_c9bafa773c0b_Output_Variables_erpId = String | Null | Number {"typeAlias": "auto_07453230-a89a-4166-87e8-5b57a8b59017_Output-Variables-erpId"}
+

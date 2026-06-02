@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:dynamics="http://www.mulesoft.org/schema/mule/dynamics"
+	xmlns:dynamics365ForOperations="http://www.mulesoft.org/schema/mule/dynamics365ForOperations" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce-pub-sub="http://www.mulesoft.org/schema/mule/salesforce-pub-sub" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce-pub-sub http://www.mulesoft.org/schema/mule/salesforce-pub-sub/current/mule-salesforce-pub-sub.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/dynamics365ForOperations http://www.mulesoft.org/schema/mule/dynamics365ForOperations/current/mule-dynamics365ForOperations.xsd
+http://www.mulesoft.org/schema/mule/dynamics http://www.mulesoft.org/schema/mule/dynamics/current/mule-dynamics.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ac7343de-2e00-4920-94b1-547d9868f12d" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="5f8ff5e3-1ba5-49b2-8568-a6ae8d249cd5" >
+		<salesforce:oauth-client-credentials-connection >
+			<salesforce:oauth-client-credentials clientId="3MVG9c81CnRMt6cJmuiJd1GtLdxmYm9.OYumyuk825_N1Pg7gQGiv55k.27gYzkDOS1PDUKTQlylU0917av8f" clientSecret="D9A01B02E7022EF86F7D108E13ECFEA213A50B59C9DAF941EB099158DF1BE6DF" tokenUrl="https://hdp--mulesoft.sandbox.my.salesforce.com/services/oauth2/token" />
+		</salesforce:oauth-client-credentials-connection>
+	</salesforce:sfdc-config>
+	<dynamics365ForOperations:dynamics-365-for-operations-config name="Dynamics_365_For_Operations_Dynamics_365_for_operations" doc:name="Dynamics 365 For Operations Dynamics 365 for operations" doc:id="6e109d7f-f365-4332-8f05-78e1af9fe10e" >
+		<dynamics365ForOperations:oauth-client-credentials-connection resource="https://hdric-uat.sandbox.operations.dynamics.com" >
+			<dynamics365ForOperations:oauth-client-credentials clientId="C0418691-175b-4fce-9cbc-d3661ded3df4" clientSecret="G4l8Q~eSpCQvMRm.xldFTNs2UMfoOjZxsgCB2dmG" tokenUrl="https://login.microsoftonline.com/545510a6-3f86-4b4c-ab29-46e704381a76/oauth2/v2.0/token" scopes="https://hdric-uat.sandbox.operations.dynamics.com/.default"/>
+		</dynamics365ForOperations:oauth-client-credentials-connection>
+	</dynamics365ForOperations:dynamics-365-for-operations-config>
+	<flow name="hdpFlow" doc:id="51fb98f0-981d-4361-a5e6-f137843a47c0" >
+		<salesforce:replay-channel-listener streamingChannel="/event/Opportunity_Reserved__e" replayOption="ONLY_NEW" doc:name="Replay channel listener" doc:id="0620d591-9161-4dc2-9e6d-a0b1b497ab63" config-ref="Salesforce_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c12623d3-063b-491c-8312-05eaea6e9cd2" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="56a447d6-70be-498a-a81c-1a68215314fd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="sfAccountId" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.data.payload.Account_Id__c]]></ee:set-variable>
+				<ee:set-variable variableName="erpId" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.data.payload.ERP_Id__c]]></ee:set-variable>
+				<ee:set-variable variableName="oppId" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.data.payload.Opportunity_Id__c]]></ee:set-variable>
+				<ee:set-variable variableName="unitName" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.data.payload.Unit_Id__c]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="05187527-c69e-4769-b7c2-aef49adc7cd5" message='#[vars.erpId ++ " " ++ vars.sfAccountId ++ " " ++ vars.unitName]'/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="b430888b-ff83-4d7a-b478-7ed0dd18aa92" >
+			<route >
+				<flow-ref doc:name="Customer" doc:id="3300a75a-13ce-45ed-8c65-15372e8a1b9c" name="customer_subFlow" />
+			</route>
+			<route >
+				<flow-ref doc:name="Unit" doc:id="55f09db7-3d8f-428c-a893-77587934b580" name="unit_subFlow"/>
+			</route>
+			<route >
+				<flow-ref doc:name="Opportunity" doc:id="8fcd3b78-7d85-43fe-a20f-a0ea7b7befdc" name="opportunity_subFlow"/>
+			</route>
+			<route >
+				<flow-ref doc:name="Installment" doc:id="678d7265-d383-47cc-9b4a-9babb2e49772" name="installment_subFlow"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="13f31b09-1305-4a62-bc12-061ba4d21edd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="combinedPayload" ><![CDATA[%dw 2.0
+output application/json
+
+var customer = payload[0].payload default {}
+var unit = payload[1].payload default {}
+var opportunity = payload[2].payload default {}
+var intallment = payload[3].payload default {}
+
+---
+{
+  customer:     customer,
+  unit:      unit,
+  opportunity:    opportunity,
+  intallments:     intallment
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="5c7ff977-dbac-4858-9154-cc14cf062bd9" message="#[vars.combinedPayload]"/>
+		<choice doc:name="Choice" doc:id="cf2c2a29-baf6-4bfa-aec5-5fe84fa2610a" >
+			<when expression="#[vars.access_token == null or (now() as Number) &gt; vars.token_expiry]">
+				<flow-ref doc:name="Get Token" doc:id="083b341b-6b21-4405-a02c-ab3051540a4a" name="token_subFlow" />
+				<logger level="INFO" doc:name="Logger" doc:id="29b6a681-f172-480f-89f9-d6de9f96a87a" message="#[payload]"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="7344aeb5-ed49-4dc5-a8ff-66580492ff57" message="valid token for property reservation"/>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Transform Message" doc:id="a4a533ff-f163-480e-b23f-8492c7176f8c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "dataAreaId": "hdrc",
+    "CurrencyCode": "EGP",
+    "ReservationStatus": "InProgress",
+    
+    
+    "PropertyReservationType": "Selling",
+    
+    // Applying [0] to the array objects to extract single values
+    "ProjectId": vars.combinedPayload.unit[0].ProjectId,
+    "PhaseId": vars.combinedPayload.unit[0].PhaseId,
+    "BuildId": vars.combinedPayload.unit[0].BuildId,
+    
+    "CustAccount": vars.combinedPayload.customer[0].CustomerAccount,
+    "ReservasionId": vars.combinedPayload.opportunity[0].Name,
+    "ReservationDate": vars.combinedPayload.opportunity[0].Reservation_Date__c,
+    
+    // Casting amounts to Number to prevent D365 metadata mismatch errors
+    "MaintenanceAmountCur": vars.combinedPayload.opportunity[0].Maintenance_Amount__c as Number,
+    "ContractSettledAmountMST": vars.combinedPayload.opportunity[0].Paid_DP_Amount__c as Number,
+    "ContractAmountCur": vars.combinedPayload.opportunity[0].Unit_Price__c as Number,
+    
+    "DeliveryStatus": "None",
+    "InvoiceStatus": "None",
+    "RecordUpdateStatus": "ExternalInserted",
+    "BlockReasonCode": "None"
+    
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="f83eb096-1957-4a49-815a-4590614115ed" message="#[payload]"/>
+		<http:request doc:name="Create PropertyReservation" doc:id="89985952-53fa-4f38-8513-28acfedcbf5f" method="POST" url="https://hdric-uat.sandbox.operations.dynamics.com/data/PropertyReservasions">
+			<http:headers ><![CDATA[#[output application/json
+---
+{
+	"Accept" : "*/*",
+	"Authorization" : "Bearer " ++ vars.access_token,
+	"Content-Type" : "application/json"
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="2051db98-7e73-4698-93c9-1b8b4932a224" message='#[payload]'/>
+		<foreach doc:name="For Each" doc:id="5f39bf27-dc62-4e56-ad87-21560e4860f4" collection="#[vars.combinedPayload.intallments]">
+			<logger level="INFO" doc:name="Logger" doc:id="73fa0f10-986b-4e40-8e0f-3403d9d89d5b" message="#[payload]"/>
+			<choice doc:name="Choice" doc:id="50ed5d63-8390-4663-a297-f088b4852615" >
+				<when expression="#[vars.access_token == null or (now() as Number) &gt; vars.token_expiry]">
+					<flow-ref doc:name="Get Token" doc:id="26ad1016-df5c-48cd-b38e-1d6c3f4b8e2f" name="token_subFlow"/>
+					<logger level="INFO" doc:name="Logger" doc:id="2642f7d5-1610-40c1-a67b-1716fa5df5e2" message="#[payload]"/>
+				</when>
+				<otherwise >
+					<logger level="INFO" doc:name="Logger" doc:id="32fe50a3-7f01-4239-ae78-e48991ed246d" message="valid token for installment"/>
+				</otherwise>
+			</choice>
+			<ee:transform doc:name="Transform Message" doc:id="db8bd7f6-3d5e-4b74-b48c-e7e8acb8c92e">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"dataAreaId": "hdrc",
+	"ReservasionId": vars.combinedPayload.opportunity[0].Name,
+	"InstallmentId": payload.Name,
+	"CurrencyCode": "EGP",
+	"CustAccount": vars.combinedPayload.customer[0].CustomerAccount,
+	"InstallmentAmountCur": payload.Instalment_Amount__c as Number,
+	"InstallmentDate": payload.Instalment_Date__c,
+	"DueDate": payload.Instalment_Date__c,
+	"InstallmentType": "Installment",
+	"InstallmentName": payload.Name,
+	"InstallmentStatus": "Created",
+	"RecordUpdateStatus": "ExternalInserted"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<http:request doc:name="Create Installment" doc:id="52afd7bc-0969-48d5-b9be-474bb0eecf65" url="https://hdric-uat.sandbox.operations.dynamics.com/data/PropertyReservasionInstallments" method="POST">
+				<http:headers ><![CDATA[#[output application/json
+---
+{
+	"Accept" : "*/*",
+	"Authorization" : "Bearer " ++ vars.access_token,
+	"Content-Type" : "application/json"
+}]]]></http:headers>
+			</http:request>
+			<logger level="INFO" doc:name="Logger" doc:id="60c9979b-4f1c-4b54-9ed3-a2c8ddf5a1de" message="#[payload]"/>
+		</foreach>
+	</flow>
+	<sub-flow name="customer_subFlow" doc:id="1bbf2792-40c7-4c47-a054-a6b38ecf4091" >
+		<logger level="INFO" doc:name="Logger" doc:id="382c409a-d023-496e-9706-13bcedad6923" message="customer sub flow"/>
+		<choice doc:name="Choice" doc:id="34684a3a-fe60-493f-8914-da04227b110d">
+			<when expression='#[vars.erpId != null and vars.erpId != ""]'>
+				<logger level="INFO" doc:name="Logger" doc:id="587ec188-b7e3-4837-85ab-06b521e1454d" message="customer exist" />
+				<dynamics365ForOperations:retrieve-multiple-by-query doc:name="get accounts" doc:id="46e9db1c-dbbb-40d6-87e9-14814f7a84d1" config-ref="Dynamics_365_For_Operations_Dynamics_365_for_operations">
+			<dynamics365ForOperations:query><![CDATA[#["dsql:SELECT * FROM Customers WHERE CustomerAccount = '" ++ (vars.erpId default "DUMMY") ++ "' LIMIT 1"]]]></dynamics365ForOperations:query>
+		</dynamics365ForOperations:retrieve-multiple-by-query>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" doc:id="79555e16-753e-4b1e-ab55-d32de40c48a9" message="need to create account" />
+				<salesforce:retrieve doc:name="Retrieve" doc:id="9a6f6d83-561d-4910-a21e-fafc394b7f51" config-ref="Salesforce_Config" type="Account">
+			<salesforce:retrieve-request><![CDATA[#[{
+    ids: [vars.sfAccountId],
+    fields: ["Id", "Name", "BillingCity"]  
+}]]]></salesforce:retrieve-request>
+		</salesforce:retrieve>
+				<ee:transform doc:name="Transform Message" doc:id="adf6c5f7-a9d9-4093-8d2a-6a36fb60019e">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+	dataAreaId: "hdrc",
+	SalesCurrencyCode: "EGP",
+	OrganizationName: payload[0].Name,
+	CustomerGroupId: "01"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="e3ac188f-ac04-4bdc-9175-fd56f6830753" message="#[payload]" />
+				<dynamics365ForOperations:create logicalName="CustomerV3(CustomersV3)" doc:name="Create Customer" doc:id="cb18f202-24aa-4ea0-8159-00851af6f1a3" config-ref="Dynamics_365_For_Operations_Dynamics_365_for_operations" />
+				<logger level="INFO" doc:name="Logger" doc:id="f8ad0220-4f6b-4b86-8245-311841859899" message='#[payload.CustomerAccount ++ " created"]' />
+				<set-variable value="#[payload.CustomerAccount]" doc:name="Set Variable" doc:id="0cfec0bd-41e1-4f05-86c5-32fe482a362d" variableName="erpId" />
+				<ee:transform doc:name="Transform Message" doc:id="105ef226-2570-47c8-9e16-9a786de35a8d">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Id: vars.sfAccountId,
+	ERP_Id__c: payload.CustomerAccount
+}]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<salesforce:update type="Account" doc:name="Update Account" doc:id="d4d9c6f1-3a19-45f9-af5f-e4066de5c12c" config-ref="Salesforce_Config" />
+				<logger level="INFO" doc:name="Logger" doc:id="72fe3bd5-e4e0-4d78-99d0-601908f5159c" message='#[vars.sfAccountId ++ " updated"]' />
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="unit_subFlow" doc:id="da3496a8-728c-4647-9628-375f13912415" >
+		<logger level="INFO" doc:name="Logger" doc:id="c94fd26e-e318-4006-a003-5011f666d965" message="this is the unit sub flow" />
+		<choice doc:name="Choice" doc:id="f8d3d6e3-fd36-45cf-bd2d-560570a88f13" >
+			<when expression='#[vars.unitName != null and vars.unitName != ""]'>
+				<logger level="INFO" doc:name="Logger" doc:id="e6d7079e-6032-40cf-a7b9-2c3933dddeb2" message="we have unit"/>
+				<dynamics365ForOperations:retrieve-multiple-by-query doc:name="Retrieve multiple by query" doc:id="60761b4b-a0e0-4f00-b732-535b6ebdea3b" config-ref="Dynamics_365_For_Operations_Dynamics_365_for_operations">
+					<dynamics365ForOperations:query ><![CDATA[#["dsql:SELECT * FROM PropertyUnits WHERE UnitId = '" ++ (vars.unitName default "DUMMY") ++ "' LIMIT 1"]]]></dynamics365ForOperations:query>
+				</dynamics365ForOperations:retrieve-multiple-by-query>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="66335dd2-6c35-40ec-9252-72b98399ceb5" message="no unit"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="opportunity_subFlow" doc:id="7c1f9999-a0c8-4ee5-82ad-62996b6a6b74" >
+		<logger level="INFO" doc:name="Logger" doc:id="129f7bfe-0577-4c27-b21f-ba571da240b2" message="enter opp"/>
+		<salesforce:retrieve type="Opportunity" doc:name="Retrieve" doc:id="f771c913-4104-4986-a78f-11ad7f97c386" config-ref="Salesforce_Config">
+			<salesforce:retrieve-request ><![CDATA[#[{
+    ids: [vars.oppId],
+    fields: ["Id", "Name", "Unit_Price__c, Maintenance_Amount__c, Reservation_Date__c, Paid_DP_Amount__c"]  
+}]]]></salesforce:retrieve-request>
+		</salesforce:retrieve>
+	</sub-flow>
+	<sub-flow name="installment_subFlow" doc:id="07453230-a89a-4166-87e8-5b57a8b59017" >
+		<logger level="INFO" doc:name="Logger" doc:id="11ac51ba-3fda-46e2-89e8-4fb6a3b1c5da" message="installment" />
+		<salesforce:query doc:name="Query" doc:id="d64f21d5-543d-4a66-bc05-041a6efc782c" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Id, Name, Instalment_Date__c, Instalment_Amount__c, Instalment_Type__c, Instalment_DateTime__c 
+FROM Instalment__c 
+WHERE Opportunity__c = ':oppIdParam' ORDER BY Instalment_Date__c ]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	oppIdParam : vars.oppId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+	</sub-flow>
+	<sub-flow name="token_subFlow" doc:id="0cec18a6-5987-41d8-b447-c9bafa773c0b" >
+		<logger level="INFO" doc:name="Logger" doc:id="810f50dc-21e7-40a4-92f9-f32dd6690c2c" message="enter token flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="455dfc0e-4081-457b-81d8-738ec264e925" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/x-www-form-urlencoded
+---
+{
+	"grant_type": "client_credentials",
+	"client_Id": "C0418691-175b-4fce-9cbc-d3661ded3df4",
+	"client_secret": "G4l8Q~eSpCQvMRm.xldFTNs2UMfoOjZxsgCB2dmG",
+	"resource": "https://hdric-uat.sandbox.operations.dynamics.com"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request doc:name="Request" doc:id="cd88e9f0-5ec1-4e91-914d-7ba715b22371" method="POST" url="https://login.microsoftonline.com/545510a6-3f86-4b4c-ab29-46e704381a76/oauth2/token"/>
+		<set-variable value="#[payload.access_token]" doc:name="Set Token" doc:id="5b75e5c2-deee-415f-a86e-d6e9b725f5f1" variableName="access_token"/>
+		<set-variable value="#[now() as Number + payload.expires_in]" doc:name="Set Token Expiry" doc:id="486c9fbf-7eff-474a-b069-599373d02089" variableName="token_expiry"/>
+	</sub-flow>
+</mule>

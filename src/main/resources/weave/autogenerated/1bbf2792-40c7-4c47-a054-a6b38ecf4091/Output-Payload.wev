@@ -1,0 +1,483 @@
+%dw 2.0
+
+type auto_1bbf2792_40c7_4c47_a054_a6b38ecf4091_Output_Payload = Array<Customer {"typeId": "Customer"}> | org_mule_runtime_api_bulk_BulkOperationResult {"typeAlias": "BulkOperationResult",
+"typeId": "org.mule.runtime.api.bulk.BulkOperationResult"}
+type org_mule_runtime_api_bulk_BulkOperationResult = {|
+  id?: java_io_Serializable {"typeId": "java.io.Serializable",
+  "typeAlias": "Serializable"}, 
+  items?: Array<org_mule_runtime_api_bulk_BulkItem {"typeAlias": "BulkItem",
+  "typeId": "org.mule.runtime.api.bulk.BulkItem"}>, 
+  successful?: Boolean {"typeId": "boolean"}
+|} {"typeAlias": "BulkOperationResult",
+"typeId": "org.mule.runtime.api.bulk.BulkOperationResult"}
+type org_mule_runtime_api_bulk_BulkItem = {|
+  exception?: java_lang_Exception {"typeId": "java.lang.Exception",
+  "typeAlias": "Exception",
+  "class": "java.lang.Exception"}, 
+  id?: java_io_Serializable_293 {"typeId": "java.io.Serializable",
+  "typeAlias": "Serializable"}, 
+  message?: String, 
+  payload?: org_mule_extension_salesforce_api_core_Result {"typeAlias": "Result",
+  "class": "org.mule.extension.salesforce.api.core.Result",
+  "typeId": "org.mule.extension.salesforce.api.core.Result"}, 
+  statusCode?: String, 
+  successful?: Boolean {"typeId": "boolean"}
+|} {"typeAlias": "BulkItem",
+"typeId": "org.mule.runtime.api.bulk.BulkItem"}
+type java_io_Serializable_293 = {|  |} {"typeId": "java.io.Serializable",
+"typeAlias": "Serializable"}
+
+
+type org_mule_extension_salesforce_api_core_Result = {|
+  errors?: Array<org_mule_extension_salesforce_api_core_Error {"class": "org.mule.extension.salesforce.api.core.Error",
+  "typeAlias": "Error",
+  "typeId": "org.mule.extension.salesforce.api.core.Error"}>, 
+  id?: String, 
+  success?: Boolean {"typeId": "boolean"}
+|} {"typeAlias": "Result",
+"class": "org.mule.extension.salesforce.api.core.Result",
+"typeId": "org.mule.extension.salesforce.api.core.Result"}
+type org_mule_extension_salesforce_api_core_Error = {|
+  duplicateResult?: org_mule_extension_salesforce_api_core_DuplicateResult {"typeAlias": "DuplicateResult",
+  "class": "org.mule.extension.salesforce.api.core.DuplicateResult",
+  "typeId": "org.mule.extension.salesforce.api.core.DuplicateResult"}, 
+  fields?: Array<String>, 
+  message?: String, 
+  statusCode?: String
+|} {"class": "org.mule.extension.salesforce.api.core.Error",
+"typeAlias": "Error",
+"typeId": "org.mule.extension.salesforce.api.core.Error"}
+type org_mule_extension_salesforce_api_core_DuplicateResult = {|
+  allowSave?: Boolean {"typeId": "boolean"}, 
+  duplicateRule?: String, 
+  duplicateRuleEntityType?: String, 
+  errorMessage?: String, 
+  matchResults?: Array<org_mule_extension_salesforce_api_core_MatchResult {"typeId": "org.mule.extension.salesforce.api.core.MatchResult",
+  "typeAlias": "MatchResult",
+  "class": "org.mule.extension.salesforce.api.core.MatchResult"}>
+|} {"typeAlias": "DuplicateResult",
+"class": "org.mule.extension.salesforce.api.core.DuplicateResult",
+"typeId": "org.mule.extension.salesforce.api.core.DuplicateResult"}
+type org_mule_extension_salesforce_api_core_MatchResult = {|
+  entityType?: String, 
+  errors?: Array<org_mule_extension_salesforce_api_core_SimpleError {"class": "org.mule.extension.salesforce.api.core.SimpleError",
+  "typeAlias": "SimpleError",
+  "typeId": "org.mule.extension.salesforce.api.core.SimpleError"}>, 
+  matchEngine?: String, 
+  matchRecords?: Array<org_mule_extension_salesforce_api_utility_MatchRecord {"typeAlias": "MatchRecord",
+  "class": "org.mule.extension.salesforce.api.utility.MatchRecord",
+  "typeId": "org.mule.extension.salesforce.api.utility.MatchRecord"}>, 
+  rule?: String, 
+  size?: Number, 
+  success?: Boolean {"typeId": "boolean"}
+|} {"typeId": "org.mule.extension.salesforce.api.core.MatchResult",
+"typeAlias": "MatchResult",
+"class": "org.mule.extension.salesforce.api.core.MatchResult"}
+type org_mule_extension_salesforce_api_core_SimpleError = {|
+  fields?: Array<String>, 
+  message?: String, 
+  statusCode?: String
+|} {"class": "org.mule.extension.salesforce.api.core.SimpleError",
+"typeAlias": "SimpleError",
+"typeId": "org.mule.extension.salesforce.api.core.SimpleError"}
+
+
+type org_mule_extension_salesforce_api_utility_MatchRecord = {|
+  additionalInformation?: Array<org_mule_extension_salesforce_api_utility_AdditionalInformationMap {"typeAlias": "AdditionalInformationMap",
+  "typeId": "org.mule.extension.salesforce.api.utility.AdditionalInformationMap",
+  "class": "org.mule.extension.salesforce.api.utility.AdditionalInformationMap"}>, 
+  fieldDiffs?: Array<org_mule_extension_salesforce_api_utility_FieldDiff {"class": "org.mule.extension.salesforce.api.utility.FieldDiff",
+  "typeAlias": "FieldDiff",
+  "typeId": "org.mule.extension.salesforce.api.utility.FieldDiff"}>, 
+  matchConfidence?: Number, 
+  record?: { _?: java_lang_Object {"class": "java.lang.Object",
+    "typeAlias": "Object",
+    "typeId": "java.lang.Object"} }
+|} {"typeAlias": "MatchRecord",
+"class": "org.mule.extension.salesforce.api.utility.MatchRecord",
+"typeId": "org.mule.extension.salesforce.api.utility.MatchRecord"}
+type org_mule_extension_salesforce_api_utility_FieldDiff = {|
+  difference?: ("DIFFERENT" | "NULL" | "SAME" | "SIMILAR") {"typeId": "org.mule.extension.salesforce.api.utility.DifferenceType"}, 
+  name?: String
+|} {"class": "org.mule.extension.salesforce.api.utility.FieldDiff",
+"typeAlias": "FieldDiff",
+"typeId": "org.mule.extension.salesforce.api.utility.FieldDiff"}
+
+
+type org_mule_extension_salesforce_api_utility_AdditionalInformationMap = {|
+  name?: String, 
+  value?: String
+|} {"typeAlias": "AdditionalInformationMap",
+"typeId": "org.mule.extension.salesforce.api.utility.AdditionalInformationMap",
+"class": "org.mule.extension.salesforce.api.utility.AdditionalInformationMap"}
+
+
+type java_lang_Object = {|  |} {"class": "java.lang.Object",
+"typeAlias": "Object",
+"typeId": "java.lang.Object"}
+
+
+
+
+
+
+
+
+
+
+
+
+type java_lang_Exception = {|
+  cause?: java_lang_Throwable {"class": "java.lang.Throwable",
+  "typeId": "java.lang.Throwable",
+  "typeAlias": "Throwable"}, 
+  localizedMessage?: String, 
+  message?: String, 
+  stackTrace?: Array<java_lang_StackTraceElement_270 {"typeAlias": "StackTraceElement",
+  "typeId": "java.lang.StackTraceElement"}>, 
+  suppressed?: Array<java_lang_Throwable_280 {"class": "java.lang.Throwable",
+  "typeId": "java.lang.Throwable",
+  "typeAlias": "Throwable"}>
+|} {"typeId": "java.lang.Exception",
+"typeAlias": "Exception",
+"class": "java.lang.Exception"}
+type java_lang_Throwable_280 = {|
+  cause?: java_lang_Throwable_280 {"class": "java.lang.Throwable",
+  "typeId": "java.lang.Throwable",
+  "typeAlias": "Throwable"}, 
+  localizedMessage?: String, 
+  message?: String, 
+  stackTrace?: Array<java_lang_StackTraceElement_284 {"typeAlias": "StackTraceElement",
+  "typeId": "java.lang.StackTraceElement"}>, 
+  suppressed?: Array<java_lang_Throwable_280 {"class": "java.lang.Throwable",
+  "typeId": "java.lang.Throwable",
+  "typeAlias": "Throwable"}>
+|} {"class": "java.lang.Throwable",
+"typeId": "java.lang.Throwable",
+"typeAlias": "Throwable"}
+type java_lang_StackTraceElement_284 = {|
+  classLoaderName?: String, 
+  className?: String, 
+  fileName?: String, 
+  lineNumber?: Number, 
+  methodName?: String, 
+  moduleName?: String, 
+  moduleVersion?: String, 
+  nativeMethod?: Boolean {"typeId": "boolean"}
+|} {"typeAlias": "StackTraceElement",
+"typeId": "java.lang.StackTraceElement"}
+
+
+
+
+type java_lang_Throwable = {|
+  cause?: java_lang_Throwable {"class": "java.lang.Throwable",
+  "typeId": "java.lang.Throwable",
+  "typeAlias": "Throwable"}, 
+  localizedMessage?: String, 
+  message?: String, 
+  stackTrace?: Array<java_lang_StackTraceElement {"typeAlias": "StackTraceElement",
+  "typeId": "java.lang.StackTraceElement"}>, 
+  suppressed?: Array<java_lang_Throwable {"class": "java.lang.Throwable",
+  "typeId": "java.lang.Throwable",
+  "typeAlias": "Throwable"}>
+|} {"class": "java.lang.Throwable",
+"typeId": "java.lang.Throwable",
+"typeAlias": "Throwable"}
+type java_lang_StackTraceElement = {|
+  classLoaderName?: String, 
+  className?: String, 
+  fileName?: String, 
+  lineNumber?: Number, 
+  methodName?: String, 
+  moduleName?: String, 
+  moduleVersion?: String, 
+  nativeMethod?: Boolean {"typeId": "boolean"}
+|} {"typeAlias": "StackTraceElement",
+"typeId": "java.lang.StackTraceElement"}
+
+
+
+
+type java_lang_StackTraceElement_270 = {|
+  classLoaderName?: String, 
+  className?: String, 
+  fileName?: String, 
+  lineNumber?: Number, 
+  methodName?: String, 
+  moduleName?: String, 
+  moduleVersion?: String, 
+  nativeMethod?: Boolean {"typeId": "boolean"}
+|} {"typeAlias": "StackTraceElement",
+"typeId": "java.lang.StackTraceElement"}
+
+
+
+
+
+
+type java_io_Serializable = {|  |} {"typeId": "java.io.Serializable",
+"typeAlias": "Serializable"}
+
+
+
+
+type Customer = {|
+  dataAreaId?: String, 
+  CustomerAccount?: String, 
+  AddressBrazilianCNPJOrCPF?: String, 
+  PartyType?: String, 
+  PrimaryContactFaxExtension?: String, 
+  IsFuelSurchargeApplied?: {|  |}, 
+  SalesTaxGroup?: String, 
+  AddressCountryRegionId?: String, 
+  ContactPersonId?: String, 
+  CustomerPaymentFineCode?: String, 
+  BirthCountyCode?: String, 
+  InvoiceAddress?: {|  |}, 
+  PackingMaterialFeeLicenseNumber?: String, 
+  TransactionPresenceType?: {|  |}, 
+  PrimaryContactTwitter?: String, 
+  PrimaryContactEmailIsIM?: {|  |}, 
+  InvoiceAddressCity?: String, 
+  IsFinalUser?: {|  |}, 
+  PrimaryContactEmail?: String, 
+  DeliveryAddressCounty?: String, 
+  HasSuframaDiscountPISandCOFINS?: {|  |}, 
+  InvoiceAddressStreet?: String, 
+  CURPNumber?: String, 
+  PrimaryContactLinkedInDescription?: String, 
+  Name?: String, 
+  DeliveryAddressCountryRegionId?: String, 
+  ItemCustomerGroupId?: String, 
+  PersonProfessionalTitle?: String, 
+  SalesSegmentId?: String, 
+  IsServiceDeliveryAddressBased?: {|  |}, 
+  PrimaryContactTelexDescription?: String, 
+  InvoiceAddressDistrictName?: String, 
+  InvoiceAddressTimeZone?: {|  |}, 
+  SalesAccountNumber?: String, 
+  PrimaryContactFacebookDescription?: String, 
+  PrimaryContactPhoneIsMobile?: {|  |}, 
+  TCSGroup?: String, 
+  DeliveryAddressLocationId?: String, 
+  AddressZipCode?: String, 
+  GiroTypeProjInvoice?: {|  |}, 
+  LineOfBusinessId?: String, 
+  OrganizationPhoneticName?: String, 
+  CreditCardCVC?: {|  |}, 
+  DeliveryAddressCountryRegionISOCode?: String, 
+  DeliveryAddressValidFrom?: DateTime, 
+  GiroTypeAccountStatement?: {|  |}, 
+  CalculateWithholdingTax?: {|  |}, 
+  IsRFIDPalletTaggingEnabled?: {|  |}, 
+  ElectronicInvoiceEAN?: String, 
+  DeliveryFreightZone?: String, 
+  PrimaryContactFax?: String, 
+  TaxExemptNumber?: String, 
+  DeliveryAddressDescription?: String, 
+  DeliveryAddressLongitude?: Number, 
+  BirthPlace?: String, 
+  AddressCity?: String, 
+  PersonInitials?: String, 
+  CentralBankPurposeCode?: String, 
+  GiroTypeCollectionletter?: {|  |}, 
+  FullPrimaryAddress?: String, 
+  OrderEntryDeadline?: String, 
+  ForeignerId?: String, 
+  WarehouseIsASNGenerated?: {|  |}, 
+  AddressLongitude?: Number, 
+  PrimaryContactLinkedIn?: String, 
+  PrimaryContactURL?: String, 
+  IsFreightAccrued?: {|  |}, 
+  PartyState?: String, 
+  PartyNumber?: String, 
+  InvoiceAccount?: String, 
+  WarehouseFulfillmentRate?: Number, 
+  CentralBankPurposeNotes?: String, 
+  CollectionsContactPersonId?: String, 
+  PersonMaritalStatus?: {|  |}, 
+  AddressLocationId?: String, 
+  PaymentSchedule?: String, 
+  PrimaryContactTwitterPurpose?: String, 
+  GiroType?: {|  |}, 
+  InvoiceAddressDescription?: String, 
+  AddressDistrictName?: String, 
+  DeliveryTerms?: String, 
+  NumberSequenceGroup?: String, 
+  PersonChildrenNames?: String, 
+  PaymentMethod?: String, 
+  DeliveryMode?: String, 
+  PersonProfessionalSuffix?: String, 
+  OnHoldStatus?: {|  |}, 
+  WarehouseFulfillmentType?: {|  |}, 
+  WarehouseId?: String, 
+  AccountStatement?: {|  |}, 
+  DestinationCode?: String, 
+  IRS1099CIndicator?: {|  |}, 
+  FrenchSiret?: String, 
+  PaymentDay?: String, 
+  BrazilianNIT?: String, 
+  FederalIndicator?: {|  |}, 
+  EmployeeResponsibleNumber?: String, 
+  PersonAnniversaryYear?: Number, 
+  DefaultInventoryStatusId?: String, 
+  PrimaryContactEmailDescription?: String, 
+  AddressTimeZone?: {|  |}, 
+  PrimaryContactPhone?: String, 
+  DeliveryAddressCity?: String, 
+  InvoiceAddressCounty?: String, 
+  PANReferenceNumber?: String, 
+  DeliveryAddressStreet?: String, 
+  SalesCurrencyCode?: String, 
+  IsSalesTaxIncludedInPrices?: {|  |}, 
+  BrazilianCNPJOrCPF?: String, 
+  PaymentFactoringAccount?: String, 
+  PANNumber?: String, 
+  PrimaryContactTwitterDescription?: String, 
+  BrazilianCCM?: String, 
+  ReceiptEmail?: String, 
+  TDSGroup?: String, 
+  MultiLineDiscountCode?: String, 
+  PersonAnniversaryDay?: Number, 
+  DefaultDimensionDisplayValue?: String, 
+  SupplementaryItemGroupId?: String, 
+  IsWithholdingTaxCalculated?: {|  |}, 
+  PaymentSpecification?: String, 
+  AddressBooks?: String, 
+  PrimaryContactEmailPurpose?: String, 
+  SalesDistrict?: String, 
+  ConsolidationDay?: Number, 
+  IsExpressBillOfLadingAccepted?: {|  |}, 
+  CreditCardAddressVerification?: {|  |}, 
+  AddressState?: String, 
+  IsExcludedFromCollectionFeeCalculation?: {|  |}, 
+  CustomerPaymentFinancialInterestCode?: String, 
+  IsTransactionPostedAsShipment?: {|  |}, 
+  IsExternallyMaintained?: {|  |}, 
+  CreditLimitIsMandatory?: {|  |}, 
+  PaymentTermsBaseDays?: Number, 
+  FiscalCode?: String, 
+  KnownAs?: String, 
+  PrimaryContactTelex?: String, 
+  PaymentBankAccount?: String, 
+  BrazilianIE?: String, 
+  PreferentialCustomer?: {|  |}, 
+  ReceiptOption?: {|  |}, 
+  FulfillmentErrorTolerance?: {|  |}, 
+  AddressBrazilianIE?: String, 
+  PersonAnniversaryMonth?: {|  |}, 
+  PrimaryContactPhoneExtension?: String, 
+  PrimaryContactPhonePurpose?: String, 
+  ExportSale?: {|  |}, 
+  OrganizationNumber?: String, 
+  CreditCardAddressVerificationIsAuthorizationVoidedOnFailure?: {|  |}, 
+  InvoiceAddressState?: String, 
+  ReceiptCalendar?: String, 
+  DeliveryAddressState?: String, 
+  StateInscription?: String, 
+  SalesReturnTaxGroup?: String, 
+  PrimaryContactURLDescription?: String, 
+  CustomerWithholdingContributionType?: {|  |}, 
+  IsElectronicInvoice?: {|  |}, 
+  FederalAgencyLocationCode?: String, 
+  GiroTypeFreeTextInvoice?: {|  |}, 
+  DeliveryAddressValidTo?: DateTime, 
+  PersonPhoneticMiddleName?: String, 
+  OrganizationABCCode?: {|  |}, 
+  BrazilianCNAE?: String, 
+  WithholdingTaxGroupCode?: String, 
+  NAFCode?: String, 
+  AddressLatitude?: Number, 
+  TotalDiscountCode?: String, 
+  PaymentCashDiscount?: String, 
+  AddressLocationRoles?: String, 
+  DeliveryAddressDistrictName?: String, 
+  CreditRating?: String, 
+  PrimaryContactFacebook?: String, 
+  InvoiceAddressLongitude?: Number, 
+  LineDiscountCode?: String, 
+  PartyCountry?: String, 
+  InvoiceAddressLatitude?: Number, 
+  IsInSuframaRegion?: {|  |}, 
+  IsIncomingFiscalDocumentGenerated?: {|  |}, 
+  SalesMemo?: String, 
+  ReliefGroupId?: String, 
+  IsExcludedFromInterestChargeCalculation?: {|  |}, 
+  StatisticsGroupId?: String, 
+  SalesOrderPoolId?: String, 
+  IsOrderNumberReferenceUsed?: {|  |}, 
+  AddressValidTo?: DateTime, 
+  FederalComments?: String, 
+  PersonGender?: {|  |}, 
+  PaymentTerms?: String, 
+  PrimaryContactPhoneDescription?: String, 
+  SalesSubsegmentId?: String, 
+  CustomerRebateGroupId?: String, 
+  AddressCounty?: String, 
+  IsRFIDCaseTaggingEnabled?: {|  |}, 
+  EnterpriseNumber?: String, 
+  IsICMSContributor?: {|  |}, 
+  InvoiceAddressValidTo?: DateTime, 
+  DeliveryAddressTimeZone?: {|  |}, 
+  InvoiceAddressValidFrom?: DateTime, 
+  CreditLimit?: Number, 
+  CreditCardAddressVerificationLevel?: {|  |}, 
+  WarehouseIsEntireShipmentFilled?: {|  |}, 
+  PackingDutyLicense?: String, 
+  NationalRegistryNumber?: String, 
+  SiteId?: String, 
+  InvoiceAddressCountryRegionISOCode?: String, 
+  PrimaryContactURLPurpose?: String, 
+  ChargesGroupId?: String, 
+  PanStatus?: {|  |}, 
+  CommissionSalesGroupId?: String, 
+  NameAlias?: String, 
+  PrimaryContactFaxPurpose?: String, 
+  PaymentIdType?: String, 
+  VendorAccount?: String, 
+  AddressCountryRegionISOCode?: String, 
+  ResidenceForeignCountryRegionId?: String, 
+  RFCNumber?: String, 
+  PersonHobbies?: String, 
+  ElectronicLocationId?: String, 
+  InvoiceAddressZipCode?: String, 
+  PrimaryContactLinkedInPurpose?: String, 
+  IsOneTimeCustomer?: {|  |}, 
+  ForeignCustomer?: {|  |}, 
+  CustomerTMAGroupId?: String, 
+  AddressValidFrom?: DateTime, 
+  OrganizationNumberOfEmployees?: Number, 
+  CompanyType?: {|  |}, 
+  IsRFIDItemTaggingEnabled?: {|  |}, 
+  CustomerGroupId?: String, 
+  GiroTypeInterestNote?: {|  |}, 
+  DeliveryAddressZipCode?: String, 
+  DeliveryReason?: String, 
+  TaxRegistrationId?: String, 
+  PaymentUseCashDiscount?: {|  |}, 
+  DiscountPriceGroupId?: String, 
+  AddressDescription?: String, 
+  SuframaNumber?: String, 
+  IdentificationNumber?: String, 
+  PersonPhoneticFirstName?: String, 
+  PrimaryContactTelexPurpose?: String, 
+  DeliveryAddressLatitude?: Number, 
+  InvoiceAddressCountryRegionId?: String, 
+  PrimaryContactFacebookPurpose?: String, 
+  CompanyChain?: String, 
+  BrazilianINSSCEI?: String, 
+  CommissionCustomerGroupId?: String, 
+  PrimaryContactFaxDescription?: String, 
+  NatureOfAssessee?: {|  |}, 
+  WriteoffReason?: String, 
+  InvoiceAddressLocationId?: String, 
+  PersonPhoneticLastName?: String, 
+  LanguageId?: String, 
+  IsPurchRequestUsed?: {|  |}, 
+  AddressStreet?: String, 
+  CardNumber?: String
+|} {"typeId": "Customer"}
+
+
+
