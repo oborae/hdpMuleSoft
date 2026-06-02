@@ -151,6 +151,7 @@ output application/json
 		</http:request>
 		<logger level="INFO" doc:name="Logger" doc:id="2051db98-7e73-4698-93c9-1b8b4932a224" message='#[payload]'/>
 		<foreach doc:name="For Each" doc:id="5f39bf27-dc62-4e56-ad87-21560e4860f4" collection="#[vars.combinedPayload.intallments]">
+			<logger level="INFO" doc:name="Logger" doc:id="73fa0f10-986b-4e40-8e0f-3403d9d89d5b" message="#[payload]"/>
 			<choice doc:name="Choice" doc:id="50ed5d63-8390-4663-a297-f088b4852615" >
 				<when expression="#[vars.access_token == null or (now() as Number) &gt; vars.token_expiry]">
 					<flow-ref doc:name="Get Token" doc:id="26ad1016-df5c-48cd-b38e-1d6c3f4b8e2f" name="token_subFlow"/>
